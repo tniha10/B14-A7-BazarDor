@@ -29,45 +29,84 @@ const getUnitText = (unit: string) => {
     switch (unit) {
         case "kg":
             return "প্রতি কেজি";
+
         case "litre":
             return "প্রতি লিটার";
+
         case "dozen":
             return "প্রতি ডজন";
+
         case "piece":
             return "প্রতি পিস";
+
         default:
             return unit;
     }
 };
 
 const ProductCard = ({ product }: ProductCardProps) => {
-    const change = product.change.pct;
-
-    let changeText = "— ০.০%";
+    let changeText = "—০.০%";
     let changeColor = "bg-gray-100 text-gray-600";
 
     if (product.change.dir === "up") {
-        changeText = `▲ ${bengaliDigits(Math.abs(change).toFixed(1))}%`;
-        changeColor = "bg-green-100 text-green-700";
+        changeText = `▲ ${bengaliDigits(
+            Math.abs(product.change.pct).toFixed(1)
+        )}%`;
+
+        changeColor = "bg-green-50 text-green-600";
     }
 
     if (product.change.dir === "down") {
-        changeText = `▼ ${bengaliDigits(Math.abs(change).toFixed(1))}%`;
-        changeColor = "bg-red-100 text-red-700";
+        changeText = `▼ ${bengaliDigits(
+            Math.abs(product.change.pct).toFixed(1)
+        )}%`;
+
+        changeColor = "bg-red-50 text-red-600";
     }
 
     return (
-        <Link href={`/product/${product.slug}`}>
-            <div className="group h-full cursor-pointer rounded-2xl border border-gray-200 bg-white p-5">
-                <div className="mb-5 flex h-28 items-center justify-center rounded-xl bg-[#F7F8F3] text-6xl">{product.image}</div>
-                <h3 className="text-lg font-bold text-gray-900">{product.nameBn}</h3>
-                <p className="mt-1 text-sm text-gray-500">{getUnitText(product.unit)}</p>
-                <div className="mt-5 flex items-end justify-between gap-3">
-                    <div>
-                        <p className="text-xs text-gray-500">আজকের দাম</p>
-                        <p className="mt-1 text-xl font-bold text-gray-900">{bengaliDigits(product.today.toLocaleString("en-US"))}{" "}টাকা</p>
+        <Link href={`/product/${product.slug}`} className="block">
+            <div className="rounded-xl border border-gray-200 bg-white p-3 transition hover:shadow-sm">
+                {/* Product information */}
+                <div className="flex items-start gap-2">
+                    {/* Emoji */}
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#F5F7F2] text-lg">
+                        {product.image}
                     </div>
-                    <span className={`rounded-full px-3 py-1 text-xs font-semibold ${changeColor}`}>{changeText}</span>
+
+                    {/* Name + unit */}
+                    <div className="min-w-0">
+                        <h3 className="truncate text-sm font-semibold text-gray-900">
+                            {product.nameBn}
+                        </h3>
+
+                        <p className="mt-0.5 text-[10px] text-gray-500">
+                            {getUnitText(product.unit)}
+                        </p>
+                    </div>
+                </div>
+
+                {/* Price row */}
+                <div className="mt-3 flex items-end justify-between gap-2">
+                    <div>
+                        <p className="text-[9px] text-gray-500">
+                            আজকের দাম
+                        </p>
+
+                        <p className="mt-0.5 text-sm font-bold text-gray-900">
+                            {bengaliDigits(
+                                product.today.toLocaleString("en-US")
+                            )}{" "}
+                            টাকা
+                        </p>
+                    </div>
+
+                    {/* Change badge */}
+                    <span
+                        className={`shrink-0 rounded-full px-2 py-1 text-[9px] font-semibold ${changeColor}`}
+                    >
+                        {changeText}
+                    </span>
                 </div>
             </div>
         </Link>

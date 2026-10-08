@@ -1,34 +1,47 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useState } from "react";
 
 const Banner = () => {
-  return (
-    <section className="bg-white px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
-      <div className="mx-auto max-w-7xl overflow-hidden rounded-2xl bg-[#f4f6ef]">
-        <div className="grid items-center gap-6 px-6 py-8 sm:px-8 sm:py-10 md:grid-cols-2 lg:px-10 lg:py-9">
+    const [dateString, setDateString] = useState("");
 
-          <div className="text-center md:text-left">
-            <p className="text-sm font-medium text-[#64748b] sm:text-base"> আজকের বাজারদর</p>
-            <h1 className="mt-2 whitespace-nowrap text-2xl font-bold leading-tight tracking-tight text-[#111827] sm:text-3xl lg:text-[42px]">আজকের বাজারের দাম এক নজরে!</h1>
+    useEffect(() => {
+        const today = new Date();
 
-            <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-[#64748b] sm:text-base md:mx-0">
-              চাল, ডাল, তেল, সবজি, মাছ, মাংস, ডিম ও অন্যান্য
-              প্রয়োজনীয় পণ্যের আজকের বাজারদর সহজেই দেখে নিন।
-            </p>
+        const formattedDate =
+            today.toLocaleDateString("bn-BD", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+            });
 
-            {/* CTA Button */}
-            <a href="#সব-পণ্য" className="mt-5 inline-flex items-center rounded-md bg-[#16a34a] px-5 py-2.5 text-sm font-semibold text-white">সব পণ্যের দাম দেখুন
-              <span className="ml-2">↓</span>
-            </a>
-          </div>
+        setDateString(formattedDate);
+    }, []);
 
-          <div className="flex justify-center md:justify-end">
-            <Image src="/assets/bazar-hero.png" alt="বাজারের প্রয়োজনীয় পণ্য" width={350} height={260} priority className="h-auto w-[210px] object-contain sm:w-[250px] lg:w-[300px]"/>
-          </div>
+    return (
+        <section className="bg-[#f4f7ed] px-4 py-10 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl">
+                <div className="rounded-3xl bg-[#e8efd9] px-5 py-10 sm:px-8 md:py-14 lg:px-12">
+                    <div className="max-w-3xl">
+                        <p className="mb-3 text-sm font-semibold text-[#61722d]">
+                            {dateString}
+                        </p>
 
-        </div>
-      </div>
-    </section>
-  );
+                        <h1 className="text-3xl font-bold leading-tight text-[#1f2915] sm:text-4xl md:text-5xl">
+                            আজকের বাজারদর জানুন
+                        </h1>
+
+                        <p className="mt-4 max-w-2xl text-sm leading-6 text-gray-600 sm:text-base">
+                            আপনার প্রয়োজনীয় পণ্যের আজকের
+                            বাজারদর দেখুন এবং বিভিন্ন বাজারের
+                            দামের তুলনা করুন।
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
 };
 
 export default Banner;

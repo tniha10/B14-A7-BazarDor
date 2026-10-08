@@ -24,15 +24,21 @@ const FallingProducts = ({ products }: FallingProductsProps) => {
         .slice(0, 6);
 
     return (
-        <section className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-            <div className="mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">আজ দাম কমেছে ▼</h2>
-                <p className="mt-2 text-sm text-gray-500">যেসব পণ্যের দাম আজ সবচেয়ে বেশি কমেছে</p>
+        <section className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 lg:px-8">
+            {/* Section heading */}
+            <div className="mb-3">
+                <h2 className="text-base font-bold text-gray-900 sm:text-lg">
+                    <span className="text-green-600">▼</span> আজ দাম কমেছে
+                </h2>
             </div>
 
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {/* Product grid */}
+            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
                 {fallingProducts.map((product) => (
-                    <ProductCard key={product.id} product={product}/>
+                    <ProductCard
+                        key={product.id}
+                        product={product}
+                    />
                 ))}
             </div>
         </section>
