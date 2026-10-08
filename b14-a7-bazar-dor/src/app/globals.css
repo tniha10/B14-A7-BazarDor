@@ -27,19 +27,21 @@ body {
 }
 
 @keyframes ticker {
-    from {
-        transform: translateX(0);
-    }
+  from {
+    transform: translateX(0);
+  }
 
-    to {
-        transform: translateX(-50%);
-    }
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 .ticker-track {
-    animation: ticker 25s linear infinite;
+  display: flex;
+  width: max-content;
+  animation: ticker 20s linear infinite;
 }
 
 .ticker-track:hover {
-    animation-play-state: paused;
+  animation-play-state: paused;
 }

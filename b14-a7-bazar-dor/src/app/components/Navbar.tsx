@@ -71,28 +71,112 @@ const Navbar = () => {
                 </div>
             </div>
 
+            {/* Price Ticker */}
             <div className="overflow-hidden border-t border-gray-100 bg-gray-50">
-                <div className="ticker-track flex w-max">
-                    <div className="flex shrink-0 items-center gap-8 px-4 py-3">
-                        <TickerItem emoji="🍚" name="চাল" price="৭৫ টাকা/কেজি" change="▲ ২.১%" up />
-                        <TickerItem emoji="🥔" name="আলু" price="৪৫ টাকা/কেজি" change="▼ ১.৪%" />
-                        <TickerItem emoji="🧅" name="পেঁয়াজ" price="৮০ টাকা/কেজি" change="▲ ৩.২%" up />
-                        <TickerItem emoji="🐟" name="ইলিশ" price="১,৮৫০ টাকা/কেজি" change="▼ ২.৯%" />
-                        <TickerItem emoji="🥚" name="ডিম" price="১৩৫ টাকা/ডজন" change="▲ ১.২%" up />
-                        <TickerItem emoji="🌶️" name="মরিচ" price="১২০ টাকা/কেজি" change="— ০.০%" flat />
-                    </div>
+               <div className="ticker-track">
 
-                    {/* Duplicate content for infinite scrolling */}
-                    <div className="flex shrink-0 items-center gap-8 px-4 py-3">
-                        <TickerItem emoji="🍚" name="চাল" price="৭৫ টাকা/কেজি" change="▲ ২.১%" up />
-                        <TickerItem emoji="🥔" name="আলু" price="৪৫ টাকা/কেজি" change="▼ ১.৪%" />
-                        <TickerItem emoji="🧅" name="পেঁয়াজ" price="৮০ টাকা/কেজি" change="▲ ৩.২%" up />
-                        <TickerItem emoji="🐟" name="ইলিশ" price="১,৮৫০ টাকা/কেজি" change="▼ ২.৯%" />
-                        <TickerItem emoji="🥚" name="ডিম" price="১৩৫ টাকা/ডজন" change="▲ ১.২%" up />
-                        <TickerItem emoji="🌶️" name="মরিচ" price="১২০ টাকা/কেজি" change="— ০.০%" flat />
-                    </div>
-                </div>
+            {/* First set */}
+            <div className="flex shrink-0 items-center gap-8 px-4 py-3">
+             <TickerItem
+                emoji="🍚"
+                name="চাল"
+                price="৭৫ টাকা/কেজি"
+                change="▲ ২.১%"
+                up
+             />
+
+             <TickerItem
+                emoji="🥔"
+                name="আলু"
+                price="৪৫ টাকা/কেজি"
+                change="▼ ১.৪%"
+             />
+
+             <TickerItem
+                emoji="🧅"
+                name="পেঁয়াজ"
+                price="৮০ টাকা/কেজি"
+                change="▲ ৩.২%"
+                up
+             />
+
+             <TickerItem
+                emoji="🐟"
+                name="ইলিশ"
+                price="১,৮৫০ টাকা/কেজি"
+                change="▼ ২.৯%"
+             />
+
+             <TickerItem
+                emoji="🥚"
+                name="ডিম"
+                price="১৩৫ টাকা/ডজন"
+                change="▲ ১.২%"
+                up
+             />
+
+             <TickerItem
+                emoji="🌶️"
+                name="মরিচ"
+                price="১২০ টাকা/কেজি"
+                change="— ০.০%"
+                flat
+             />
             </div>
+
+
+        {/* Exact duplicate */}
+        <div className="flex shrink-0 items-center gap-8 px-4 py-3">
+            <TickerItem
+                emoji="🍚"
+                name="চাল"
+                price="৭৫ টাকা/কেজি"
+                change="▲ ২.১%"
+                up
+            />
+
+            <TickerItem
+                emoji="🥔"
+                name="আলু"
+                price="৪৫ টাকা/কেজি"
+                change="▼ ১.৪%"
+            />
+
+            <TickerItem
+                emoji="🧅"
+                name="পেঁয়াজ"
+                price="৮০ টাকা/কেজি"
+                change="▲ ৩.২%"
+                up
+            />
+
+            <TickerItem
+                emoji="🐟"
+                name="ইলিশ"
+                price="১,৮৫০ টাকা/কেজি"
+                change="▼ ২.৯%"
+            />
+
+            <TickerItem
+                emoji="🥚"
+                name="ডিম"
+                price="১৩৫ টাকা/ডজন"
+                change="▲ ১.২%"
+                up
+            />
+
+            <TickerItem
+                emoji="🌶️"
+                name="মরিচ"
+                price="১২০ টাকা/কেজি"
+                change="— ০.০%"
+                flat
+            />
+        </div>
+
+    </div>
+
+</div>
         </header>
     );
 };
