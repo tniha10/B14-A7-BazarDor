@@ -67,46 +67,22 @@ const ProductCard = ({ product }: ProductCardProps) => {
     return (
         <Link href={`/product/${product.slug}`} className="block">
             <div className="rounded-xl border border-gray-200 bg-white p-3 transition hover:shadow-sm">
-                {/* Product information */}
                 <div className="flex items-start gap-2">
-                    {/* Emoji */}
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#F5F7F2] text-lg">
-                        {product.image}
-                    </div>
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#F5F7F2] text-lg">{product.image}</div>
 
-                    {/* Name + unit */}
                     <div className="min-w-0">
-                        <h3 className="truncate text-sm font-semibold text-gray-900">
-                            {product.nameBn}
-                        </h3>
-
-                        <p className="mt-0.5 text-[10px] text-gray-500">
-                            {getUnitText(product.unit)}
-                        </p>
+                        <h3 className="truncate text-sm font-semibold text-gray-900">{product.nameBn}</h3>
+                        <p className="mt-0.5 text-[10px] text-gray-500">{getUnitText(product.unit)}</p>
                     </div>
                 </div>
 
-                {/* Price row */}
                 <div className="mt-3 flex items-end justify-between gap-2">
                     <div>
-                        <p className="text-[9px] text-gray-500">
-                            আজকের দাম
-                        </p>
-
-                        <p className="mt-0.5 text-sm font-bold text-gray-900">
-                            {bengaliDigits(
-                                product.today.toLocaleString("en-US")
-                            )}{" "}
-                            টাকা
-                        </p>
+                        <p className="text-[9px] text-gray-500">আজকের দাম</p>
+                        <p className="mt-0.5 text-sm font-bold text-gray-900">{bengaliDigits(product.today.toLocaleString("en-US"))}{" "}টাকা</p>
                     </div>
 
-                    {/* Change badge */}
-                    <span
-                        className={`shrink-0 rounded-full px-2 py-1 text-[9px] font-semibold ${changeColor}`}
-                    >
-                        {changeText}
-                    </span>
+                    <span className={`shrink-0 rounded-full px-2 py-1 text-[9px] font-semibold ${changeColor}`}>{changeText}</span>
                 </div>
             </div>
         </Link>

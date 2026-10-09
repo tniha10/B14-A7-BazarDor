@@ -15,8 +15,11 @@ export default function RootLayout({
     return (
         <html lang="bn">
             <body>
+
                 <Navbar />
+
                 {children}
+                
             </body>
         </html>
     );

@@ -25,21 +25,16 @@ const RisingProducts = ({ products }: RisingProductsProps) => {
 
     return (
         <section className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 lg:px-8">
-            {/* Section heading */}
+           
             <div className="mb-3">
                 <h2 className="text-base font-bold text-gray-900 sm:text-lg">
                     <span className="text-red-500">▲</span> আজ দাম বেড়েছে
                 </h2>
             </div>
 
-            {/* Product grid */}
             <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
                 {risingProducts.map((product) => (
-                    <ProductCard
-                        key={product.id}
-                        product={product}
-                    />
-                ))}
+                    <ProductCard key={product.id} product={product}/>))}
             </div>
         </section>
     );

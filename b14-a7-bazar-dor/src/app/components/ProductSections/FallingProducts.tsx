@@ -25,21 +25,15 @@ const FallingProducts = ({ products }: FallingProductsProps) => {
 
     return (
         <section className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 lg:px-8">
-            {/* Section heading */}
             <div className="mb-3">
                 <h2 className="text-base font-bold text-gray-900 sm:text-lg">
                     <span className="text-green-600">▼</span> আজ দাম কমেছে
                 </h2>
             </div>
 
-            {/* Product grid */}
             <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
                 {fallingProducts.map((product) => (
-                    <ProductCard
-                        key={product.id}
-                        product={product}
-                    />
-                ))}
+                    <ProductCard key={product.id} product={product}/>))}
             </div>
         </section>
     );
