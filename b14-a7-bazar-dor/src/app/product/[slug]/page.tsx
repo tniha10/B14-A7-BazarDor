@@ -36,7 +36,7 @@ const toBn = (num: number | string | undefined | null): string => {
 
 const unitLabel = (unit: string) => (unit === "kg" ? "কেজি" : unit);
 
-// Fetches the product list (this endpoint works) and finds the product by slug.
+// Fetches the product list and finds the product by slug.
 // Returns null if no product has that slug. Throws on network/server errors.
 async function getProduct(slug: string): Promise<Product | null> {
   const url = `${BASE_URL}/products`;

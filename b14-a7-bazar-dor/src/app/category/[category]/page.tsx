@@ -86,7 +86,7 @@ const normalize = (value: string): string => {
   try {
     v = decodeURIComponent(value);
   } catch {
-    // keep raw value if it cannot be decoded
+    // keeps the raw value if it cannot be decoded
   }
   return v.trim().toLowerCase();
 };
@@ -136,9 +136,6 @@ export default function CategoryPage(): React.JSX.Element {
         const allProducts: Product[] = Array.isArray(data)
           ? data
           : data.products ?? [];
-
-        // Uncomment to see what your API really returns:
-        // console.log("sample product:", allProducts[0]);
 
         const info = findCategory(categoryParam);
         const wanted = info ? info.aliases : [normalize(categoryParam)];
