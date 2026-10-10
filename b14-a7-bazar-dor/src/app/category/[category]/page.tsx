@@ -21,21 +21,106 @@ interface Product {
   };
 }
 
+interface CategoryInfo {
+  nameBn: string;
+  icon: string;
+  aliases: string[];
+}
+
+type SortOption = "default" | "lowToHigh" | "highToLow";
+
+const CATEGORIES: CategoryInfo[] = [
+  { nameBn: "সব", icon: "🛒", aliases: ["all", "sob", "সব"] },
+  { nameBn: "চাল", icon: "🍚", aliases: ["rice", "chal", "চাল"] },
+  { nameBn: "ডাল", icon: "🫘", aliases: ["dal", "daal", "pulses", "lentils", "ডাল"] },
+  { nameBn: "তেল", icon: "🛢️", aliases: ["oil", "tel", "তেল"] },
+  {
+    nameBn: "সবজি",
+    icon: "🥦",
+    aliases: ["vegetables", "vegetable", "veg", "sobji", "sabji", "shobji", "সবজি"],
+  },
+  { nameBn: "মাছ", icon: "🐟", aliases: ["fish", "mach", "mas", "মাছ"] },
+  { nameBn: "মাংস", icon: "🥩", aliases: ["meat", "mangsho", "mangso", "মাংস"] },
+  { nameBn: "ডিম", icon: "🥚", aliases: ["egg", "eggs", "dim", "ডিম"] },
+  {
+    nameBn: "মসলা",
+    icon: "🌶️",
+    aliases: ["spices", "spice", "moshla", "masala", "মসলা"],
+  },
+];
+
+const styles = {
+  main: "min-h-screen bg-[#f7f8f3] px-4 py-6 sm:px-6 lg:px-8",
+  wrap: "mx-auto max-w-6xl space-y-6",
+  card: "rounded-2xl border border-gray-100 bg-white shadow-sm",
+  headerCard:
+    "flex items-center gap-4 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm",
+  iconBox:
+    "flex h-16 w-16 items-center justify-center rounded-2xl bg-[#f5f6f0] text-3xl",
+  sortBar:
+    "flex items-center justify-between rounded-2xl border border-gray-100 " +
+    "bg-white px-6 py-4 text-xs text-gray-600 shadow-sm sm:justify-end",
+  select:
+    "rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs " +
+    "font-medium text-gray-800 outline-none focus:border-emerald-500",
+  grid: "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3",
+  skeleton:
+    "animate-pulse space-y-4 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm",
+  productCard:
+    "flex flex-col justify-between rounded-2xl border border-gray-100 " +
+    "bg-white p-5 shadow-sm transition-shadow hover:shadow-md",
+  productIcon:
+    "flex h-12 w-12 shrink-0 items-center justify-center rounded-xl " +
+    "bg-[#f5f6f0] text-2xl",
+  emptyBox:
+    "flex flex-col items-center justify-center space-y-4 rounded-2xl " +
+    "border border-gray-100 bg-white p-12 text-center shadow-sm",
+  homeBtn:
+    "inline-flex items-center justify-center rounded-xl bg-emerald-600 " +
+    "px-5 py-2.5 text-xs font-semibold text-white shadow-sm " +
+    "transition-colors hover:bg-emerald-700",
+};
+
+const normalize = (value: string): string => {
+  let v = value;
+  try {
+    v = decodeURIComponent(value);
+  } catch {
+    // keep raw value if it cannot be decoded
+  }
+  return v.trim().toLowerCase();
+};
+
+const findCategory = (param: string): CategoryInfo | undefined => {
+  const key = normalize(param);
+  return CATEGORIES.find((c) => c.aliases.includes(key));
+};
+
 const toBnDigit = (num: number | string | undefined): string => {
   if (num === undefined || num === null) return "";
   const bnDigits = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
-  return num
-    .toString()
-    .replace(/\d/g, (digit) => bnDigits[parseInt(digit, 10)]);
+  return num.toString().replace(/\d/g, (d) => bnDigits[parseInt(d, 10)]);
+};
+
+const changeClass = (dir: "up" | "down" | "flat"): string => {
+  const base =
+    "inline-flex items-center rounded-md px-2 py-1 text-[11px] font-semibold ";
+  if (dir === "up") return base + "bg-rose-50 text-rose-600";
+  if (dir === "down") return base + "bg-emerald-50 text-emerald-600";
+  return base + "bg-gray-100 text-gray-500";
 };
 
 export default function CategoryPage(): React.JSX.Element {
   const params = useParams();
   const categoryParam = (params?.category as string) || "";
 
+  const categoryInfo = findCategory(categoryParam);
+  const categoryNameBn = categoryInfo?.nameBn ?? normalize(categoryParam);
+  const categoryIcon = categoryInfo?.icon ?? "🌾";
+
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [sortOption, setSortOption] = useState<"default" | "lowToHigh" | "highToLow">("default");
+  const [sortOption, setSortOption] = useState<SortOption>("default");
 
   useEffect(() => {
     async function fetchProducts() {
@@ -47,23 +132,32 @@ export default function CategoryPage(): React.JSX.Element {
 
         if (!response.ok) throw new Error("Failed to fetch products");
 
-        const allProducts: Product[] = await response.json();
+        const data = await response.json();
+        const allProducts: Product[] = Array.isArray(data)
+          ? data
+          : data.products ?? [];
+
+        // Uncomment to see what your API really returns:
+        // console.log("sample product:", allProducts[0]);
+
+        const info = findCategory(categoryParam);
+        const wanted = info ? info.aliases : [normalize(categoryParam)];
 
         const filtered = allProducts.filter((product) => {
-          if (product.category) {
-            return product.category.toLowerCase() === categoryParam.toLowerCase();
-          }
-          if (product.categories) {
-            return product.categories.some(
-              (cat) => cat.toLowerCase() === categoryParam.toLowerCase()
-            );
-          }
-          return false;
+          if (info && info.aliases.includes("all")) return true;
+
+          const productCats: string[] = [
+            ...(product.category ? [product.category] : []),
+            ...(product.categories ?? []),
+          ].map((c) => normalize(c));
+
+          return productCats.some((c) => wanted.includes(c));
         });
 
         setProducts(filtered);
       } catch (error) {
         console.error("Error fetching category products:", error);
+        setProducts([]);
       } finally {
         setLoading(false);
       }
@@ -80,29 +174,34 @@ export default function CategoryPage(): React.JSX.Element {
     return 0;
   });
 
-  const categoryNameBn =
-    categoryParam.toLowerCase() === "chal"
-      ? "চাল"
-      : categoryParam.toLowerCase() === "sobji"
-      ? "সবজি"
-      : categoryParam;
+  const totalText = toBnDigit(sortedProducts.length);
 
   return (
-    <main className="min-h-screen bg-[#f7f8f3] px-4 py-6 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-6xl space-y-6">
-        <div className="flex items-center gap-4 rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#f5f6f0] text-3xl">🍚</div>
+    <main className={styles.main}>
+      <div className={styles.wrap}>
+        <div className={styles.headerCard}>
+          <div className={styles.iconBox}>{categoryIcon}</div>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">{categoryNameBn}</h1>
-            <p className="mt-1 text-xs text-gray-500">প্রতি পণ্যের আজকের দাম ও পরিবর্তন</p>
+            <h1 className="text-2xl font-bold text-gray-900">
+              {categoryNameBn}
+            </h1>
+            <p className="mt-1 text-xs text-gray-500">
+              প্রতি পণ্যের আজকের দাম ও পরিবর্তন
+            </p>
           </div>
         </div>
 
-        <div className="flex items-center justify-between sm:justify-end rounded-2xl bg-white px-6 py-4 shadow-sm border border-gray-100 text-xs text-gray-600">
-          <p className="text-xs text-gray-500 font-medium sm:hidden">মোট {toBnDigit(sortedProducts.length)} টি পণ্য</p>
+        <div className={styles.sortBar}>
+          <p className="text-xs font-medium text-gray-500 sm:hidden">
+            মোট {totalText} টি পণ্য
+          </p>
           <div className="flex items-center gap-2">
             <span>সাজান:</span>
-            <select value={sortOption} onChange={(e) => setSortOption(e.target.value as "default" | "lowToHigh" | "highToLow")} className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-800 outline-none focus:border-emerald-500">
+            <select
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value as SortOption)}
+              className={styles.select}
+            >
               <option value="default">ডিফল্ট</option>
               <option value="lowToHigh">দাম: কম থেকে বেশি</option>
               <option value="highToLow">দাম: বেশি থেকে কম</option>
@@ -110,20 +209,22 @@ export default function CategoryPage(): React.JSX.Element {
           </div>
         </div>
 
-        <p className="hidden sm:block text-xs text-gray-500 font-medium">মোট {toBnDigit(sortedProducts.length)} টি পণ্য দেখানো হচ্ছে</p>
+        <p className="hidden text-xs font-medium text-gray-500 sm:block">
+          মোট {totalText} টি পণ্য দেখানো হচ্ছে
+        </p>
 
         {loading ? (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className={styles.grid}>
             {[1, 2, 3, 4, 5, 6].map((idx) => (
-              <div key={idx} className="animate-pulse rounded-2xl border border-gray-100 bg-white p-5 shadow-sm space-y-4">
+              <div key={idx} className={styles.skeleton}>
                 <div className="flex items-start gap-3">
                   <div className="h-12 w-12 rounded-xl bg-gray-200" />
-                  <div className="space-y-2 flex-1">
+                  <div className="flex-1 space-y-2">
                     <div className="h-4 w-1/2 rounded bg-gray-200" />
                     <div className="h-3 w-1/3 rounded bg-gray-200" />
                   </div>
                 </div>
-                <div className="flex justify-between items-center border-t border-gray-50 pt-3">
+                <div className="flex items-center justify-between border-t border-gray-50 pt-3">
                   <div className="h-5 w-1/3 rounded bg-gray-200" />
                   <div className="h-5 w-1/4 rounded bg-gray-200" />
                 </div>
@@ -131,34 +232,39 @@ export default function CategoryPage(): React.JSX.Element {
             ))}
           </div>
         ) : sortedProducts.length > 0 ? (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className={styles.grid}>
             {sortedProducts.map((product) => (
-              <Link key={product.id} href={`/product/${product.slug}`}className="flex flex-col justify-between rounded-2xl border border-gray-100 bg-white p-5 shadow-sm hover:shadow-md transition-shadow">
-                <div>
-                  <div className="flex items-start gap-3">
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#f5f6f0] text-2xl">{product.image || "🌾"}</div>
-                    <div>
-                      <h2 className="font-bold text-gray-900 text-sm">{product.nameBn}</h2>
-                      <p className="text-xs text-gray-400 mt-0.5">{product.unit || "প্রতি কেজি"}</p>
-                    </div>
+              <Link
+                key={product.id}
+                href={`/product/${product.slug}`}
+                className={styles.productCard}
+              >
+                <div className="flex items-start gap-3">
+                  <div className={styles.productIcon}>
+                    {product.image || "🌾"}
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-bold text-gray-900">
+                      {product.nameBn}
+                    </h2>
+                    <p className="mt-0.5 text-xs text-gray-400">
+                      {product.unit || "প্রতি কেজি"}
+                    </p>
                   </div>
                 </div>
 
                 <div className="mt-4 flex items-end justify-between border-t border-gray-50 pt-3">
                   <div>
-                    <p className="text-[10px] text-gray-400 font-medium">আজকের দাম</p>
-                    <p className="text-lg font-extrabold text-gray-900">{toBnDigit(product.today)} টাকা</p>
+                    <p className="text-[10px] font-medium text-gray-400">
+                      আজকের দাম
+                    </p>
+                    <p className="text-lg font-extrabold text-gray-900">
+                      {toBnDigit(product.today)} টাকা
+                    </p>
                   </div>
 
                   {product.change && (
-                    <span className={`inline-flex items-center rounded-md px-2 py-1 text-[11px] font-semibold ${
-                        product.change.dir === "up"
-                          ? "bg-rose-50 text-rose-600"
-                          : product.change.dir === "down"
-                          ? "bg-emerald-50 text-emerald-600"
-                          : "bg-gray-100 text-gray-500"
-                      }`}
-                    >
+                    <span className={changeClass(product.change.dir)}>
                       {product.change.dir === "up" && "▲ "}
                       {product.change.dir === "down" && "▼ "}
                       {product.change.dir === "flat" && "— "}
@@ -170,13 +276,17 @@ export default function CategoryPage(): React.JSX.Element {
             ))}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center rounded-2xl border border-gray-100 bg-white p-12 text-center shadow-sm space-y-4">
+          <div className={styles.emptyBox}>
             <div className="text-5xl">🔍</div>
-            <h3 className="text-lg font-bold text-gray-800">কোনো পণ্য পাওয়া যায়নি</h3>
-            <p className="text-xs text-gray-500 max-w-sm">
+            <h3 className="text-lg font-bold text-gray-800">
+              কোনো পণ্য পাওয়া যায়নি
+            </h3>
+            <p className="max-w-sm text-xs text-gray-500">
               এই ক্যাটাগরিতে বর্তমানে কোনো ডেটা নেই অথবা লিংকটি ভুল হতে পারে।
             </p>
-            <Link href="/" className="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-5 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-emerald-700 transition-colors">হোম পেজে ফিরে যান</Link>
+            <Link href="/" className={styles.homeBtn}>
+              হোম পেজে ফিরে যান
+            </Link>
           </div>
         )}
       </div>
