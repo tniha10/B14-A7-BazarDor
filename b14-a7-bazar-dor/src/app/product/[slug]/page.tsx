@@ -42,9 +42,6 @@ async function getProduct(slug: string): Promise<Product | null> {
   const url = `${BASE_URL}/products`;
   const res = await fetch(url, { cache: "no-store" });
 
-  // Shows in the terminal running `npm run dev`
-  console.log("PRODUCT FETCH →", url, res.status);
-
   if (!res.ok) throw new Error(`Failed to fetch products (${res.status})`);
 
   const json = await res.json();
@@ -62,14 +59,14 @@ async function getProduct(slug: string): Promise<Product | null> {
 
 function ProductSkeleton() {
   return (
-    <main className="min-h-screen bg-[#f7f8f3] px-4 py-6 sm:px-6 lg:px-8">
+    <div className="bg-[#f7f8f3] px-4 py-6 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl space-y-6 animate-pulse">
         <div className="h-4 w-48 rounded bg-gray-200" />
         <div className="h-32 rounded-2xl bg-white border border-gray-100" />
         <div className="h-40 rounded-2xl bg-white border border-gray-100" />
         <div className="h-72 rounded-2xl bg-white border border-gray-100" />
       </div>
-    </main>
+    </div>
   );
 }
 
@@ -92,7 +89,7 @@ async function ProductContent({
   } catch (error) {
     console.error("Product Details Error:", error);
     return (
-      <div className="min-h-screen bg-[#f7f8f3] flex flex-col items-center justify-center p-4">
+      <div className="bg-[#f7f8f3] flex flex-col items-center justify-center px-4 py-24">
         <p className="text-sm text-red-500">পণ্যটির তথ্য লোড করতে ব্যর্থ হয়েছে।</p>
         <Link
           href="/"
@@ -140,7 +137,7 @@ async function ProductContent({
   const changeArrow = dir === "up" ? "▲" : dir === "down" ? "▼" : "–";
 
   return (
-    <main className="min-h-screen bg-[#f7f8f3] px-4 py-6 sm:px-6 lg:px-8">
+    <div className="bg-[#f7f8f3] px-4 py-6 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl space-y-6">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-xs text-gray-500">
@@ -172,9 +169,7 @@ async function ProductContent({
               <p className="text-xs text-gray-500">
                 প্রতি {unitLabel(product.unit)} · {product.categoryNameBn}
               </p>
-              <p className="text-xs text-gray-600">
-                {changeText}
-              </p>
+              <p className="text-xs text-gray-600">{changeText}</p>
             </div>
 
             <div className="rounded-2xl bg-[#f5f6f0] px-6 py-4 text-center">
@@ -287,7 +282,7 @@ async function ProductContent({
           )}
         </div>
       </div>
-    </main>
+    </div>
   );
 }
 
